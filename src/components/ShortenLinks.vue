@@ -2,25 +2,24 @@
 
     <div class="center">
         <div class="margin">
-            <form>
                 <div class= "center_horizontally">
-                    <span id="center_ai">center_ai</span>
+                    <h1 id="center_ai">center_ai</h1>
                 </div>
                 <div class= "center_horizontally">
                     <span id="title">Short link</span>   
                 </div>
                 <div>
-                    <label for="fname">Link to shortcut</label>
-                    <input type="text" v-model="url" />
+                    <label class="text_color">Link to shortcut</label>
+                    <input id="url" type="text" v-model="url" @input="change($event)"/>
+                    <div class="error" v-if="!isValid">URL is invalid</div>
                 </div>
-                <div class="center_horizontally">
-                    <button type="button" @click="sendUrl">Shorten-it</button>
+                <div>
+                    <button type="button" class="button" @click="sendUrl">Shorten it</button>
                 </div>
                 <div class="in_line">
-                <label>{{urlResult}}</label>
-                <button class="rigth" type="button">copy</button>
+                <a :href=urlResult>{{urlResult}}</a>
+                <button class="rigth" type="button" @click="copy"><img src="@/assets/content_copy_black_24dp.svg" /></button>
                 </div>
-            </form>
         </div>
     </div>
 
@@ -32,11 +31,14 @@ export default {
   data() {
     return { 
         url: '',
-        urlResult: ''
+        urlResult: '',
+        isValid: true,
+        regex: /(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,2048}(\.)?[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
     }
   },
 methods: { 
-    sendUrl(event) {
+    sendUrl() {
+        if (this.isURLValid(this.url)){
         axios.post('short_links/', {"link": this.url})
         .then((response) => {
             var baseUrl = window.location.origin
@@ -46,78 +48,53 @@ methods: {
         
         })
     }
+    },
+    copy() {
+        navigator.clipboard.writeText(this.urlResult)
+    },
+    change:function(){
+
+      this.isURLValid(this.url);
+    },
+    isURLValid: function(inputUrl) {
+      this.isValid=   this.regex.test(inputUrl)
+      return this.isValid
+    }
 },
 }
 
 </script>
 
 <style>
+
 #center_ai {
     font-size: 3em;
     color: #4a24ac;
     font-weight: bold;
-
+}
+#url{
+    border: none;
+    border-bottom: 1px solid #4a24ac;
 }
 #title {
     font-size: 1.5em;
-
     font-weight: bold;
 }
 .margin{
-    margin: 25px;
+    margin: 0px, 15px;
 }
-body{
-    background-color: #ebedf0;
-}
-.center {
-  /* border: 5px solid; */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  width: 40%;
-  height: 40%;
-  background-color: #ffffff;
-}
-.center_horizontally{
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-  text-align: center;
-}
-.in_line{
-    clear: both;
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 15px;
-    background-color: #e6e3e3;
-    width: 92%;
-}
-.rigth{
-    float: right;
-}
-input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-input[type=submit] {
-  width: 100%;  
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
+.button{
+  background-color: #4a24ac;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 25px;
 }
-input[type=submit]:hover {
-  background-color: #45a049;
-}
+
 
 </style>
