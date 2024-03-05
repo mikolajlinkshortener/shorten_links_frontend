@@ -1,12 +1,13 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
-import Redirect from './components/Redirect.vue'
+import RedirectPage from './components/RedirectPage.vue'
 import ShortenLinks from './components/ShortenLinks.vue'
+import "./assets/reset.css";
 
 
 const routes = [
-    { path: '/:shortlink', component: Redirect },
+    { path: '/:shortlink', component: RedirectPage },
     { path: '/shorten-links', component: ShortenLinks },
   ]
 
